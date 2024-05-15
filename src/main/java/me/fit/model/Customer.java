@@ -15,14 +15,13 @@ import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
 
 @Entity
-@NamedQueries({ @NamedQuery(name = Customer.GET_ALL_CUSTOMERS, query = "Select c from Customers c"),
+@NamedQueries({ @NamedQuery(name = Customer.GET_ALL_CUSTOMERS, query = "Select c from Customer c"),
 		@NamedQuery(name = Customer.GET_CUSTOMER_BY_NAME, query = "Select c from Customer c where c.name = :name") })
 public class Customer implements Serializable {
 
 	public static final String GET_ALL_CUSTOMERS = "getAllCustomers";
 	public static final String GET_CUSTOMER_BY_NAME = "getCustomerByName";
 
-	
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -34,6 +33,10 @@ public class Customer implements Serializable {
 	private String lastName;
 
 	private String email;
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "customerID")
+	private Set<Rental> rentals;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "customerID")

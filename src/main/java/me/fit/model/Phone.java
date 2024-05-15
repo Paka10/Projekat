@@ -4,20 +4,25 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 
 
 @Entity
 @NamedQueries({
-    @NamedQuery(name = Phone.GET_ALL_FOR_CUSTOMER, query = "SELECT p FROM Phone p WHERE p.users.id = :id")
+    @NamedQuery(name = Phone.GET_ALL_FOR_CUSTOMER, query = "SELECT p FROM Phone p WHERE p.customer.id = :id")
 })
 public class Phone {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "phone_seq")
 	public Long id;
 	
+	@ManyToOne 
+	@JoinColumn(name= "customerID")
 	public Customer customer;
+	
 	public String broj;
 	public static final String GET_ALL_FOR_CUSTOMER = "getAllPhonesForCustomer";
 

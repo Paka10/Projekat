@@ -1,21 +1,37 @@
 package me.fit.model;
 
 import java.util.Objects;
+import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
 
 @Entity
+@NamedQueries({ @NamedQuery(name = Brand.GET_ALL_BRANDS, query = "SELECT b FROM Brand b") })
 public class Brand {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "category_seq")
 	private Long brandID;
-
 	private String brandName;
+
+	
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "brandID")
+	@JsonIgnore
+	private Set<Vehicle> vehicles;
+	
+	
+	public static final String GET_ALL_BRANDS = "getAllBrands";
 
 	@Override
 	public int hashCode() {

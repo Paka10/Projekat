@@ -8,9 +8,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
 
 @Entity
+@NamedQueries({ @NamedQuery(name = Rental.GET_ALL_RENTALS, query = "Select r from Rental r") })
 public class Rental {
+	public static final String GET_ALL_RENTALS = "getAllRentals";
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "rental_seq")
 	private Long rentalID;
@@ -18,8 +23,10 @@ public class Rental {
 	private String returnDate;
 	private boolean returned;
 
+//napravi ovdje jednu metodu koja racuna koliko dana i koja je cijena ukupna vozila
+
 	@ManyToOne
-	@JoinColumn(name = "customerId")
+	@JoinColumn(name = "customerID")
 	private Customer customer;
 
 	public String getReturnDate() {
