@@ -11,25 +11,23 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
+import jakarta.persistence.SequenceGenerator;
 
 @Entity
-@NamedQueries({
-	@NamedQuery(name = Vehicle.GET_ALL_VEHICLES, query = "SELECT v FROM Vehicle v WHERE v.id = :id")
-})
+@NamedQueries({ @NamedQuery(name = Vehicle.GET_ALL_VEHICLES, query = "SELECT v FROM Vehicle v") })
 public class Vehicle {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vehicle_seq")
+	@SequenceGenerator(name = "vehicle_seq", sequenceName = "vehicle_sequence", allocationSize = 1)
 	private Long id;
 	private String model;
 	private String year;
 	private Double price;
-	
-	
+
 	@ManyToOne
-	@JoinColumn(name= "brandID")
+	@JoinColumn(name = "brandID")
 	private Brand brand;
-	
-	
+
 	public static final String GET_ALL_VEHICLES = "getAllVehicles";
 
 	public Long getId() {
@@ -85,6 +83,14 @@ public class Vehicle {
 
 	public void setYear(String year) {
 		this.year = year;
+	}
+
+	public Brand getBrand() {
+		return brand;
+	}
+
+	public void setBrand(Brand brand) {
+		this.brand = brand;
 	}
 
 }

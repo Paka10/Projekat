@@ -9,8 +9,10 @@ import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import me.fit.enums.CustomerStatus;
 import me.fit.exception.CustomerException;
+import me.fit.exception.VehicleException;
 import me.fit.model.Customer;
 import me.fit.model.Phone;
+import me.fit.model.Vehicle;
 
 @Dependent
 public class CustomerService {
@@ -54,6 +56,17 @@ public class CustomerService {
 
 		}
 		return customers;
+	}
+	
+	@Transactional
+	public void deleteCustomerByID(Long customerID) throws VehicleException {
+		
+		Customer customer = em.find(Customer.class, customerID);
+		if (customer == null) {
+			throw new VehicleException("Vehicle with the ID: " + customerID + " does not exist.");
+		}
+		em.remove(customer);
+		
 	}
 
 }

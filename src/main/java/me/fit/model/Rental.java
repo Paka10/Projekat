@@ -10,6 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
+import jakarta.persistence.SequenceGenerator;
 
 @Entity
 @NamedQueries({ @NamedQuery(name = Rental.GET_ALL_RENTALS, query = "Select r from Rental r") })
@@ -18,6 +19,7 @@ public class Rental {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "rental_seq")
+	@SequenceGenerator(name = "rental_seq", sequenceName = "rental_sequence", allocationSize = 1)
 	private Long rentalID;
 	private String rentalDate;
 	private String returnDate;

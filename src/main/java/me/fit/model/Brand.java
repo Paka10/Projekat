@@ -15,17 +15,19 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.SequenceGenerator;
 
 @Entity
 @NamedQueries({ @NamedQuery(name = Brand.GET_ALL_BRANDS, query = "SELECT b FROM Brand b") })
 public class Brand {
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "category_seq")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "brand_seq")
+	@SequenceGenerator(name = "brand_seq", sequenceName = "brand_sequence", allocationSize = 1)
 	private Long brandID;
 	private String brandName;
 
 	
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name = "brandID")
 	@JsonIgnore
 	private Set<Vehicle> vehicles;

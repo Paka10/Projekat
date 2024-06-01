@@ -6,14 +6,17 @@ import org.eclipse.microprofile.openapi.annotations.Operation;
 
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import me.fit.exception.CustomerException;
+import me.fit.exception.VehicleException;
 import me.fit.model.Customer;
 import me.fit.service.CustomerService;
 
@@ -26,16 +29,19 @@ public class CustomerRest {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/createCustomer")
-	@Operation(summary = "Web service which creates a new customer.", description = "Customer must be uniqe")
+	@Operation(summary = "Web service which creates a new customer.", description = "Customer must be unique")
 	public Response createCustomer(Customer customer) {
-		Customer c = null;
-		try {
-			c = customerService.createCustomer(c);
-		} catch (CustomerException e) {
-			return Response.status(Status.CONFLICT).entity(c).build();
-		}
-		return Response.ok().entity(c).build();
 
+		if (customer == null) {
+
+			return Response.status(Status.BAD_REQUEST).entity("Customer object is null").build();
+		}
+		try {
+			Customer createdCustomer = customerService.createCustomer(customer);
+			return Response.ok().entity(createdCustomer).build();
+		} catch (CustomerException e) {
+			return Response.status(Status.CONFLICT).entity(e.getMessage()).build();
+		}
 	}
 
 	@GET
@@ -44,6 +50,19 @@ public class CustomerRest {
 	public Response getAllCustomers() {
 		List<Customer> customers = customerService.getAllCustomers();
 		return Response.ok().entity(customers).build();
+	}
+
+	@DELETE
+	@Path("/deleteCustomer/{customerID}")
+	@Operation(summary = "Delete customer based on ID", description = "Removes customer based on his ID")
+	public Response deleteCustomer(@PathParam("customerID") Long customerID) {
+		try {
+			customerService.deleteCustomerByID(customerID);
+			return Response.status(Status.OK).build();
+		} catch (VehicleException e) {
+			return Response.status(Status.NOT_FOUND).entity(e.getMessage()).build();
+		}
+
 	}
 
 }

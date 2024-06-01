@@ -31,4 +31,13 @@ public class RentalService {
 		return rentals;
 	}
 
+	@Transactional
+	public void deleteRentalByID(Long rentalID) throws RentalException {
+		Rental rental = em.find(Rental.class, rentalID);
+		if (rental == null) {
+			throw new RentalException("Rental with the ID: " + rentalID + " does not exist.");
+		}
+		em.remove(rental);
+	}
+
 }

@@ -13,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.SequenceGenerator;
 
 @Entity
 @NamedQueries({ @NamedQuery(name = Customer.GET_ALL_CUSTOMERS, query = "Select c from Customer c"),
@@ -26,6 +27,7 @@ public class Customer implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "customer_seq")
+	@SequenceGenerator(name = "customer_seq", sequenceName = "customer_sequence", allocationSize = 1)
 	private Long id;
 
 	private String name;
@@ -34,11 +36,11 @@ public class Customer implements Serializable {
 
 	private String email;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name = "customerID")
 	private Set<Rental> rentals;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name = "customerID")
 	private Set<Phone> phoneNumbers;
 
