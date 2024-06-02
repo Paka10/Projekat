@@ -3,6 +3,8 @@ package me.fit.model;
 import java.io.Serializable;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -13,6 +15,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 
 @Entity
@@ -43,6 +46,26 @@ public class Customer implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name = "customerID")
 	private Set<Phone> phoneNumbers;
+
+	@OneToOne(cascade = CascadeType.ALL)
+	@JsonIgnore
+	private IPLog ipLog;
+
+	public Set<Rental> getRentals() {
+		return rentals;
+	}
+
+	public void setRentals(Set<Rental> rentals) {
+		this.rentals = rentals;
+	}
+
+	public IPLog getIpLog() {
+		return ipLog;
+	}
+
+	public void setIpLog(IPLog ipLog) {
+		this.ipLog = ipLog;
+	}
 
 	public Long getId() {
 		return id;

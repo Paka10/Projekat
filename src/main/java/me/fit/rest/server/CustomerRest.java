@@ -1,8 +1,10 @@
 package me.fit.rest.server;
 
+import java.util.Date;
 import java.util.List;
 
 import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
@@ -18,6 +20,8 @@ import jakarta.ws.rs.core.Response.Status;
 import me.fit.exception.CustomerException;
 import me.fit.exception.VehicleException;
 import me.fit.model.Customer;
+import me.fit.model.IPLog;
+import me.fit.rest.client.IPClient;
 import me.fit.service.CustomerService;
 
 @Path("/api/customer")
@@ -25,6 +29,10 @@ public class CustomerRest {
 
 	@Inject
 	private CustomerService customerService;
+
+	@Inject
+	@RestClient
+	private IPClient ipClient;
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -37,7 +45,9 @@ public class CustomerRest {
 			return Response.status(Status.BAD_REQUEST).entity("Customer object is null").build();
 		}
 		try {
-			Customer createdCustomer = customerService.createCustomer(customer);
+			IPLog ipLog = ipClient.getIp();
+			ipLog.setCreatedDate(new Date());
+			Customer createdCustomer = customerService.createCustomer(customer, ipLog);
 			return Response.ok().entity(createdCustomer).build();
 		} catch (CustomerException e) {
 			return Response.status(Status.CONFLICT).entity(e.getMessage()).build();

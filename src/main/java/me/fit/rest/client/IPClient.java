@@ -11,3 +11,4 @@ public interface IPClient {
 	@Path("/client-ip")
 	IPLog getIp();
 }
+
