@@ -1,5 +1,7 @@
 package me.fit.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -10,23 +12,22 @@ import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.SequenceGenerator;
 
-
 @Entity
 @NamedQueries({
-    @NamedQuery(name = Phone.GET_ALL_FOR_CUSTOMER, query = "SELECT p FROM Phone p WHERE p.customer.id = :id")
-})
+		@NamedQuery(name = Phone.GET_ALL_FOR_CUSTOMER, query = "SELECT p FROM Phone p WHERE p.customer.id = :id") })
 public class Phone {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "phone_seq")
 	@SequenceGenerator(name = "phone_seq", sequenceName = "phone_sequence", allocationSize = 1)
-	
+
 	public Long id;
-	
-	@ManyToOne 
-	@JoinColumn(name= "customerID")
+
+	@ManyToOne
+	@JsonIgnore
+	@JoinColumn(name = "customerID")
 	public Customer customer;
-	
-	public String broj;
+
+	public String number;
 	public static final String GET_ALL_FOR_CUSTOMER = "getAllPhonesForCustomer";
 
 	public Long getId() {
@@ -45,12 +46,12 @@ public class Phone {
 		this.customer = customer;
 	}
 
-	public String getBroj() {
-		return broj;
+	public String getNumber() {
+		return number;
 	}
 
-	public void setBroj(String broj) {
-		this.broj = broj;
+	public void setNumber(String broj) {
+		this.number = broj;
 	}
 
 }

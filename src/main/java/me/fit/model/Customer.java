@@ -1,6 +1,5 @@
 package me.fit.model;
 
-import java.io.Serializable;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -12,6 +11,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
@@ -21,12 +22,10 @@ import jakarta.persistence.SequenceGenerator;
 @Entity
 @NamedQueries({ @NamedQuery(name = Customer.GET_ALL_CUSTOMERS, query = "Select c from Customer c"),
 		@NamedQuery(name = Customer.GET_CUSTOMER_BY_NAME, query = "Select c from Customer c where c.name = :name") })
-public class Customer implements Serializable {
+public class Customer {
 
 	public static final String GET_ALL_CUSTOMERS = "getAllCustomers";
 	public static final String GET_CUSTOMER_BY_NAME = "getCustomerByName";
-
-	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "customer_seq")
@@ -39,8 +38,9 @@ public class Customer implements Serializable {
 
 	private String email;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinColumn(name = "customerID")
+	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JsonIgnore
+//	@JoinColumn(name = "customerID")
 	private Set<Rental> rentals;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -50,6 +50,29 @@ public class Customer implements Serializable {
 	@OneToOne(cascade = CascadeType.ALL)
 	@JsonIgnore
 	private IPLog ipLog;
+
+	@Lob
+	private byte[] image;
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "country_id")
+	private Country country;
+
+	public Country getCountry() {
+		return country;
+	}
+
+	public void setCountry(Country country) {
+		this.country = country;
+	}
+
+	public byte[] getImage() {
+		return image;
+	}
+
+	public void setImage(byte[] image) {
+		this.image = image;
+	}
 
 	public Set<Rental> getRentals() {
 		return rentals;

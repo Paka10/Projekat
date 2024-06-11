@@ -1,5 +1,7 @@
 package me.fit.service;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import jakarta.enterprise.context.Dependent;
@@ -7,8 +9,11 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import me.fit.enums.RentalStatus;
+import me.fit.exception.CustomerException;
 import me.fit.exception.RentalException;
+import me.fit.model.Customer;
 import me.fit.model.Rental;
+import me.fit.model.Vehicle;
 
 @Dependent
 public class RentalService {
@@ -17,11 +22,33 @@ public class RentalService {
 	private EntityManager em;
 
 	@Transactional
-	public Rental createRental(Rental r) throws RentalException {
+	public Rental createRental(Rental r, Long customerID, Long vehicleID) throws RentalException {
+		Customer customer = em.find(Customer.class, customerID);
+		if (customer == null) {
+			throw new RentalException("Customer with this id does not exist");
+		}
+		Vehicle vehicle = em.find(Vehicle.class, vehicleID);
+		if (vehicle == null) {
+			throw new RentalException("Vehicle with this id does not exist");
+		}
+
+		if (customerID == null || vehicleID == null) {
+			throw new RentalException("ID's must be provided.");
+		}
+
+//		customer = em.find(Customer.class, customerID);
+//		vehicle = em.find(Vehicle.class, vehicleID);
+		r.setCustomer(customer);
+		r.setVehicle(vehicle);
+		r.setRentalDate(Date.valueOf(LocalDate.now()));
+		r.calculateRentalprice();
+
 		List<Rental> rentals = getAllRentals();
+
 		if (rentals.contains(r)) {
 			throw new RentalException(RentalStatus.EXISTS.getLabel());
 		}
+
 		return em.merge(r);
 	}
 

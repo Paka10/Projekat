@@ -28,12 +28,13 @@ public class CustomerService {
 	}
 
 	@Transactional
-	public Customer createCustomer(Customer c, IPLog ipLog) throws CustomerException {
+	public Customer createCustomer(Customer c, IPLog ipLog, byte[] image) throws CustomerException {
 		List<Customer> customers = getAllCustomers();
 		if (customers.contains(c)) {
 			throw new CustomerException(CustomerStatus.EXISTS.getLabel());
 		}
 		c.setIpLog(ipLog);
+		c.setImage(image);
 		return em.merge(c);
 	}
 
@@ -69,6 +70,16 @@ public class CustomerService {
 		}
 		em.remove(customer);
 
+	}
+
+	@Transactional
+	public Customer updateCustomerEmail(Long customerID, String newEmail) throws CustomerException {
+		Customer customer = em.find(Customer.class, customerID);
+		if (customer == null) {
+			throw new CustomerException("Customer with the id: " + customerID + " could not be found.");
+		}
+		customer.setEmail(newEmail);
+		return em.merge(customer);
 	}
 
 }

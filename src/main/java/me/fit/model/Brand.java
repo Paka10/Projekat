@@ -26,13 +26,11 @@ public class Brand {
 	private Long brandID;
 	private String brandName;
 
-	
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinColumn(name = "brandID")
+	@OneToMany(mappedBy = "brand", cascade = CascadeType.ALL, orphanRemoval = true)
+//	@JoinColumn(name = "brandID")
 	@JsonIgnore
 	private Set<Vehicle> vehicles;
-	
-	
+
 	public static final String GET_ALL_BRANDS = "getAllBrands";
 
 	@Override
@@ -55,6 +53,14 @@ public class Brand {
 	@Override
 	public String toString() {
 		return "Brand [brandID=" + brandID + ", brandName=" + brandName + "]";
+	}
+
+	public Set<Vehicle> getVehicles() {
+		return vehicles;
+	}
+
+	public void setVehicles(Set<Vehicle> vehicles) {
+		this.vehicles = vehicles;
 	}
 
 	public Long getBrandID() {
